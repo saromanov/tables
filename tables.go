@@ -53,9 +53,10 @@ func (t *App) addSeperator(args []interface{}) {
 // buildFormatString will build up the formatting string used by the *tabwriter.Writer
 func (t *App) buildFormatString(args []interface{}) string {
 	var b bytes.Buffer
+	l := len(args)
 	for idx := range args {
 		b.WriteString("%v")
-		if idx+1 != len(args) {
+		if idx+1 != l {
 			b.WriteString("\t")
 		}
 	}
