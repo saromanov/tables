@@ -40,10 +40,11 @@ func (t *App) Build() {
 // addSeperator will write a new dash seperator line based on the args length
 func (t *App) addSeperator(args []interface{}) {
 	var b bytes.Buffer
+	l := len(args)
 	for idx, arg := range args {
 		length := len(fmt.Sprintf("%v", arg))
 		b.WriteString(strings.Repeat("-", length))
-		if idx+1 != len(args) {
+		if idx+1 != l {
 			b.WriteString("\t")
 		}
 	}
