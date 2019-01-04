@@ -28,10 +28,10 @@ func (t *App) AddLine(args ...interface{}) {
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
-// AddHeader will write a new table line followed by a seperator
+// AddHeader will write a new table line followed by a separator
 func (t *App) AddHeader(args ...interface{}) {
 	t.AddLine(args...)
-	t.addSeperator(args)
+	t.addSeparator(args)
 }
 
 // Build will write the table to the terminal
@@ -44,8 +44,8 @@ func (t *App) String() string {
 	return t.lines
 }
 
-// addSeperator will write a new dash seperator line based on the args length
-func (t *App) addSeperator(args []interface{}) {
+// addSeparator will write a new dash separator line based on the args length
+func (t *App) addSeparator(args []interface{}) {
 	var b bytes.Buffer
 	l := len(args)
 	for idx, arg := range args {
