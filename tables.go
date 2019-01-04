@@ -32,8 +32,8 @@ func (t *App) AddHeader(args ...interface{}) {
 	t.addSeperator(args)
 }
 
-// Print will write the table to the terminal
-func (t *App) Print() {
+// Build will write the table to the terminal
+func (t *App) Build() {
 	t.writer.Flush()
 }
 
