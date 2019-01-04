@@ -11,6 +11,7 @@ import (
 // App is provides create of the new app
 type App struct {
 	writer *tabwriter.Writer
+	lines  string
 }
 
 // New provides create of the new app
@@ -23,6 +24,7 @@ func New() *App {
 // AddLine will write a new table line
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
+	t.lines += fmt.Sprintf(formatString, args...)
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
@@ -35,6 +37,11 @@ func (t *App) AddHeader(args ...interface{}) {
 // Build will write the table to the terminal
 func (t *App) Build() {
 	t.writer.Flush()
+}
+
+// String returns formated string
+func (t *App) String() string {
+	return t.lines
 }
 
 // addSeperator will write a new dash seperator line based on the args length
@@ -51,15 +58,16 @@ func (t *App) addSeperator(args []interface{}) {
 	fmt.Fprintln(t.writer, b.String())
 }
 
-// buildFormatString will build up the formatting string used by the *tabwriter.Writer
+// buildFormatString will build up the formatting string
 func (t *App) buildFormatString(args []interface{}) string {
 	var b bytes.Buffer
 	l := len(args)
 	for idx := range args {
 		b.WriteString("%v")
-		if idx+1 != l {
-			b.WriteString("\t")
+		if idx+1 == l {
+			break
 		}
+		b.WriteString("\t")
 	}
 	b.WriteString("\n")
 	return b.String()
