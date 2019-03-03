@@ -5,3 +5,26 @@
 [![Coverage Status](https://coveralls.io/repos/github/saromanov/tables/badge.svg?branch=master)](https://coveralls.io/github/saromanov/tables?branch=master)
 
 Simple representation of tables on console
+
+### Example
+```go
+
+import "github.com/saromanov/tables"
+
+func main() {
+	t := tables.New()
+	t.AddHeader("foo", "bar")
+	t.AddLine("a", "b")
+	t.AddLine("c", "d")
+	t.Build()
+}
+```
+Output:
+
+```
+foo  bar
+---  ---
+a    b
+c    d
+
+```
