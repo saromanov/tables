@@ -36,7 +36,10 @@ func (t *App) AddLine(args ...interface{}) {
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
-// AddLineWithColor provides adding of line with specific color
+// AddLineHooks provides adding of line hooks
+// Its call at the stage of formatting. So, its doesen't change
+// content of the lines. For example, this is possible
+// to add color of the lines
 func (t *App) AddLineHooks(hooks ...Hook) {
 	t.lineHooks = hooks
 }
