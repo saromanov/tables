@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/fatih/color"
 )
 
 // App is provides create of the new app
@@ -25,6 +27,14 @@ func New() *App {
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
 	t.lines += fmt.Sprintf(formatString, args...)
+	fmt.Fprintf(t.writer, formatString, args...)
+}
+
+// AddLineWithColor provides adding of line with specific color
+func (t *App) AddLineWithColor(col string, args ...interface{}) {
+	colored := color.New(returnColor(col)).SprintFunc()
+	formatString := colored(t.buildFormatString(args))
+	t.lines += colored(fmt.Sprintf(formatString, args...))
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
@@ -71,4 +81,12 @@ func (t *App) buildFormatString(args []interface{}) string {
 	}
 	b.WriteString("\n")
 	return b.String()
+}
+
+func returnColor(col string) color.Attribute {
+	switch col {
+	case "red":
+		return color.FgRed
+	}
+	return color.FgWhite
 }
