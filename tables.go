@@ -27,17 +27,18 @@ func New() *App {
 // AddLine will write a new table line
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
+	line := fmt.Sprintf(formatString, args...)
 	if len(t.hooks) > 0 {
 		for _, h := range t.hooks {
 			formatString = h(formatString)
+			//line = h(line)
 		}
 	}
-	t.hooks = []Hook{}
-	t.lines += fmt.Sprintf(formatString, args...)
+	t.lines += line
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
-// AddLineHooks provides adding of line hooks
+// AddHooks provides adding of line hooks
 // Its call at the stage of formatting. So, its doesen't change
 // content of the lines. For example, this is possible
 // to add color of the lines
