@@ -12,9 +12,9 @@ type Hook func(string) string
 
 // App is provides create of the new app
 type App struct {
-	writer    *tabwriter.Writer
-	lines     string
-	lineHooks []Hook
+	writer *tabwriter.Writer
+	lines  string
+	hooks  []Hook
 }
 
 // New provides create of the new app
@@ -27,11 +27,12 @@ func New() *App {
 // AddLine will write a new table line
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
-	if len(t.lineHooks) > 0 {
-		for _, h := range t.lineHooks {
+	if len(t.hooks) > 0 {
+		for _, h := range t.hooks {
 			formatString = h(formatString)
 		}
 	}
+	t.hooks = []Hook{}
 	t.lines += fmt.Sprintf(formatString, args...)
 	fmt.Fprintf(t.writer, formatString, args...)
 }
@@ -40,8 +41,8 @@ func (t *App) AddLine(args ...interface{}) {
 // Its call at the stage of formatting. So, its doesen't change
 // content of the lines. For example, this is possible
 // to add color of the lines
-func (t *App) AddLineHooks(hooks ...Hook) {
-	t.lineHooks = hooks
+func (t *App) AddHooks(hooks ...Hook) {
+	t.hooks = hooks
 }
 
 // AddHeader will write a new table line followed by a separator
