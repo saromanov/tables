@@ -6,14 +6,15 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
-
-	"github.com/fatih/color"
 )
+
+type Hook func(string) string
 
 // App is provides create of the new app
 type App struct {
-	writer *tabwriter.Writer
-	lines  string
+	writer    *tabwriter.Writer
+	lines     string
+	lineHooks []Hook
 }
 
 // New provides create of the new app
@@ -26,16 +27,18 @@ func New() *App {
 // AddLine will write a new table line
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
+	if len(t.lineHooks) > 0 {
+		for _, h := range t.lineHooks {
+			formatString = h(formatString)
+		}
+	}
 	t.lines += fmt.Sprintf(formatString, args...)
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
 // AddLineWithColor provides adding of line with specific color
-func (t *App) AddLineWithColor(col string, args ...interface{}) {
-	colored := color.New(returnColor(col)).SprintFunc()
-	formatString := colored(t.buildFormatString(args))
-	t.lines += colored(fmt.Sprintf(formatString, args...))
-	fmt.Fprintf(t.writer, formatString, args...)
+func (t *App) AddLineHooks(hooks ...Hook) {
+	t.lineHooks = hooks
 }
 
 // AddHeader will write a new table line followed by a separator
@@ -81,12 +84,4 @@ func (t *App) buildFormatString(args []interface{}) string {
 	}
 	b.WriteString("\n")
 	return b.String()
-}
-
-func returnColor(col string) color.Attribute {
-	switch col {
-	case "red":
-		return color.FgRed
-	}
-	return color.FgWhite
 }
