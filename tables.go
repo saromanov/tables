@@ -80,7 +80,7 @@ func (t *App) addSeparator(args []interface{}) {
 func (t *App) buildFormatString(args []interface{}) string {
 	var b bytes.Buffer
 	l := len(args)
-	for idx  := range args {
+	for idx := range args {
 		b.WriteString("%v")
 		if idx+1 == l {
 			break
