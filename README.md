@@ -28,3 +28,28 @@ a    b
 c    d
 
 ```
+
+### Hooks
+You can add hook before execution of the table. As example it might be colorized of the table
+
+```go
+
+import (
+	"github.com/fatih/color"
+	"github.com/saromanov/tables"
+)
+
+	table := tables.New()
+	table.AddHooks(func(s string) string {
+		return color.New(color.FgGreen).SprintFunc()(s)
+	},
+	)
+	table.AddHeader("one", "two", "three", "four")
+	table.AddHooks(func(s string) string {
+		return color.New(color.FgYellow).SprintFunc()(s)
+	},
+	)
+	table.AddLine("red", "poom", "boom", "sasdsadasdas")
+	table.AddLine("red", "poom", "boom", "sasdsadasdas")
+	table.Build()
+	```
