@@ -10,6 +10,9 @@ import (
 	"github.com/rivo/uniseg"
 )
 
+// Hook defines function type for hook definition
+// inside that method is able to modify string
+// and dtehn retrun it
 type Hook func(string) string
 
 // App is provides create of the new app

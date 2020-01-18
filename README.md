@@ -6,7 +6,9 @@
 
 Simple representation of tables on console
 
-### Example
+## Examples
+
+### Basic example
 ```go
 
 import "github.com/saromanov/tables"
