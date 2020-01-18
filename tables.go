@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/rivo/uniseg"
 )
 
 type Hook func(string) string
@@ -28,9 +30,11 @@ func New() *App {
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
 	line := fmt.Sprintf(formatString, args...)
+	for _, h := range t.hooks {
+		line = h(line)
+	}
 	t.lines += line
-	t.hooks = []Hook{}
-	fmt.Fprintf(t.writer, formatString, args...)
+	fmt.Fprintf(t.writer, line)
 }
 
 // AddHooks provides adding of line hooks
@@ -62,10 +66,11 @@ func (t *App) addSeparator(args []interface{}) {
 	var b bytes.Buffer
 	l := len(args)
 	for idx, arg := range args {
-		length := len(fmt.Sprintf("%v", arg))
-		b.WriteString(strings.Repeat("-", length))
+		s := fmt.Sprintf("%v", arg)
+		length := uniseg.GraphemeClusterCount(s)
+		b.WriteString(strings.Repeat("-", length+1))
 		if idx+1 != l {
-			b.WriteString("\t")
+			b.WriteString(" ")
 		}
 	}
 	fmt.Fprintln(t.writer, b.String())
@@ -75,18 +80,14 @@ func (t *App) addSeparator(args []interface{}) {
 func (t *App) buildFormatString(args []interface{}) string {
 	var b bytes.Buffer
 	l := len(args)
-	for idx := range args {
+	for idx  := range args {
 		b.WriteString("%v")
 		if idx+1 == l {
 			break
 		}
-		b.WriteString("\t")
+		b.WriteString("  ")
 	}
 	b.WriteString("\n")
 	result := b.String()
-	for _, h := range t.hooks {
-		result = h(result)
-	}
-	t.hooks = []Hook{}
 	return result
 }
