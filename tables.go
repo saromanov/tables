@@ -28,13 +28,8 @@ func New() *App {
 func (t *App) AddLine(args ...interface{}) {
 	formatString := t.buildFormatString(args)
 	line := fmt.Sprintf(formatString, args...)
-	if len(t.hooks) > 0 {
-		for _, h := range t.hooks {
-			formatString = h(formatString)
-			//line = h(line)
-		}
-	}
 	t.lines += line
+	t.hooks = []Hook{}
 	fmt.Fprintf(t.writer, formatString, args...)
 }
 
@@ -88,5 +83,10 @@ func (t *App) buildFormatString(args []interface{}) string {
 		b.WriteString("\t")
 	}
 	b.WriteString("\n")
-	return b.String()
+	result := b.String()
+	for _, h := range t.hooks {
+		result = h(result)
+	}
+	t.hooks = []Hook{}
+	return result
 }
